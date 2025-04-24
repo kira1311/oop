@@ -23,6 +23,16 @@ class Product:
         else:
             print("Цена не должна быть нулевая или отрицательная")
 
+    def __str__(self):
+        """Строковое отображение для Product"""
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
+    def __add__(self, other):
+        """Сумма всех товаров на складе"""
+        if isinstance(other, Product):
+            return self.price * self.quantity + other.price * other.quantity
+        raise TypeError("Операнд справа должен иметь тип Product")
+
 
 class Category:
     name: str
@@ -52,7 +62,16 @@ class Category:
             f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
             for product in self.__products)
 
-    @classmethod
-    def new_product(cls, product_data):
-        """Создает новый продукт на основе словаря."""
-        return Product(name=product_data['name'], description=product_data['description'], price=product_data['price'], quantity=product_data['quantity'])
+    def add_product(self, product: Product):
+        if isinstance(product, Product):
+            self.__products.append(product)
+            Category.product_count += 1
+
+    def __iter__(self):
+        """Позволяет итерироваться по продуктам категории"""
+        return iter(self.__products)
+
+    def __str__(self):
+        """Строковое отображение для Category"""
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
