@@ -5,6 +5,7 @@ class Product:
     quantity: int
 
     def __init__(self, name, description, price, quantity):
+        """Инициализация объекта Product."""
         self.name = name
         self.description = description
         self.__price = price
@@ -24,14 +25,40 @@ class Product:
             print("Цена не должна быть нулевая или отрицательная")
 
     def __str__(self):
-        """Строковое отображение для Product"""
+        """Строковое отображение для класса Product"""
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
         """Сумма всех товаров на складе"""
-        if isinstance(other, Product):
+        if isinstance(other, type(self)):
             return self.price * self.quantity + other.price * other.quantity
         raise TypeError("Операнд справа должен иметь тип Product")
+
+
+class Smartphone(Product):
+    def __init__(self, name, description, price, quantity, efficiency, model, memory, color):
+        """Класс наследник для Product"""
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+    def __str__(self):
+        return f"{self.name}, {self.model}, {self.memory}, {self.color}, {self.price} руб. Остаток: {self.quantity} шт."
+
+
+class LawnGrass(Product):
+    """Класс наследник для Product"""
+    def __init__(self, name, description, price, quantity, country, germination_period, color):
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+    def __str__(self):
+        """Возвращает строковое представление объекта Smartphone."""
+        return f"{self.name}, {self.country}, {self.germination_period}, {self.color}, {self.price} руб. Остаток: {self.quantity} шт."
 
 
 class Category:
@@ -42,18 +69,11 @@ class Category:
     product_count = 0
 
     def __init__(self, name, description):
+        """Инициализация объекта LawnGrass."""
         self.name = name
         self.description = description
         self.__products = []
         Category.category_count += 1
-
-    def add_product_category(self, product):
-        """Счетчик продуктов"""
-        if isinstance(product, Product):
-            self.__products.append(product)
-            Category.product_count += 1
-        else:
-            print("Можно добавлять только объекты типа Product")
 
     @property
     def products(self):
@@ -63,15 +83,18 @@ class Category:
             for product in self.__products)
 
     def add_product(self, product: Product):
+        """Добавляет продукт в категорию."""
         if isinstance(product, Product):
             self.__products.append(product)
             Category.product_count += 1
+        else:
+            raise TypeError("Можно добавлять только объекты типа Product или его наследников.")
 
     def __iter__(self):
         """Позволяет итерироваться по продуктам категории"""
         return iter(self.__products)
 
     def __str__(self):
-        """Строковое отображение для Category"""
+        """Строковое отображение для класса Category"""
         total_quantity = sum(product.quantity for product in self.__products)
         return f"{self.name}, количество продуктов: {total_quantity} шт."
