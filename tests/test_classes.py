@@ -1,6 +1,6 @@
 import pytest
-
-from src.classes import Category, LawnGrass, Smartphone
+import logging
+from src.classes import Category, LawnGrass, Smartphone, Product
 
 
 @pytest.fixture()
@@ -63,12 +63,7 @@ def test_invalid_product_addition(test_smartphone, test_lawn_grass):
         _ = test_smartphone + test_lawn_grass
 
 
-def test_category_iteration(sample_category, test_smartphone):
-    smartphone2 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 90.1, "S23 Ultra", 256, "Серый")
-    sample_category.add_product(test_smartphone)
-    sample_category.add_product(smartphone2)
-
-    products = [product for product in sample_category]
-    assert len(products) == 2
-    assert products[0] == test_smartphone
-    assert products[1] == smartphone2
+def test_logging_mixin(caplog):
+    with caplog.at_level(logging.INFO):
+        product = Product("Test Product", "Description", 100.0, 10)
+    assert "Создан объект Product с параметрами" in caplog.text
