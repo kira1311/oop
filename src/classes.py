@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 
 
 class BaseProduct(ABC):
@@ -41,6 +41,8 @@ class Product(LoggingMixin, BaseProduct):
     def __init__(self, name, description, price, quantity):
         """Инициализация объекта Product."""
         super().__init__(name, description, price, quantity)
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         self.name = name
         self.description = description
         self.__price = price
@@ -119,11 +121,16 @@ class Category:
 
     def add_product(self, product: Product):
         """Добавляет продукт в категорию."""
-        if isinstance(product, Product):
-            self.__products.append(product)
-            Category.product_count += 1
-        else:
-            raise TypeError("Можно добавлять только объекты типа Product или его наследников.")
+        try:
+            if isinstance(product, Product):
+                self.__products.append(product)
+                Category.product_count += 1
+            else:
+                raise TypeError("Можно добавлять только объекты типа Product или его наследников.")
+        except ValueError as e:
+            print(e)
+        finally:
+            print("Обработка добавления товара завершена")
 
     def __iter__(self):
         """Позволяет итерироваться по продуктам категории"""

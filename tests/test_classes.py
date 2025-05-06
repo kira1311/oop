@@ -1,6 +1,8 @@
-import pytest
 import logging
-from src.classes import Category, LawnGrass, Smartphone, Product
+
+import pytest
+
+from src.classes import Category, LawnGrass, Product, Smartphone
 
 
 @pytest.fixture()
@@ -67,3 +69,8 @@ def test_logging_mixin(caplog):
     with caplog.at_level(logging.INFO):
         product = Product("Test Product", "Description", 100.0, 10)
     assert "Создан объект Product с параметрами" in caplog.text
+
+
+def test_zero_product():
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Test Product", "Description", 100.0, 0)
