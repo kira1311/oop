@@ -1,5 +1,7 @@
 import logging
+
 import pytest
+
 from src.classes import Category, LawnGrass, Product, Smartphone
 
 
